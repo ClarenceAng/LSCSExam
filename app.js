@@ -1,7 +1,7 @@
 import express from "express";
 import mysql from "mysql2";
 import bodyParser from "body-parser";
-import {createQuestion, updateQuestion, updateChoices, deleteQuestion, getQuestion, questionList, checkAnswer} from './database.js';
+import {createQuestion, updateQuestion, deleteQuestion, getQuestion, questionList, checkAnswer} from './database.js';
 
 const app = express()
 const router = express.Router()
@@ -22,17 +22,15 @@ app.get("/test", (req, res) => {
 */
 
 app.post("/create", async (req, res) => {
-    const {question, choice} = req.body
-        const create__question = await createQuestion(question, choice)
+    const {question, choice, is_correct} = req.body
+        const create__question = await createQuestion(question, choice, is_correct)
         res.status(200)
 });
 
 app.put("/update/:id", async (req, res) => {
     const id = req.params.id
-    const {new_question, chosen_question_id} = req.body
-    const {new_choice, chosen_choice_id} = req.body
-    const create__question = await updateQuestion(new_question, chosen_question_id)
-    const create__choice = await updateChoices(new_choice, chosen_choice_id)
+    const {new_question, new_choice, is_correct, chosen_choice_id} = req.body
+    const create__question = await updateQuestion(new_question, id, new_choice, is_correct, chosen_choice_id)
     res.status(204)
 }); 
 

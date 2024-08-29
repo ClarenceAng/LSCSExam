@@ -30,25 +30,22 @@ const pool = mysql.createPool({
         return data
     }
 
-export async function updateQuestion(new_question, chosen_question_id)
+export async function updateQuestion(new_question, chosen_question_id, new_choice, is_correct, chosen_choice_id)
 {
     const [update_Question] = await pool.query(`
         UPDATE questionsList
         SET question = ?
         WHERE question_id = ?`, [new_question, chosen_question_id])
-    
-        return update_Question
-}
-
-export async function updateChoices(new_choice, chosen_choice_id)
-{
     const [update_Choices] = await pool.query(`
         UPDATE choicesList
-        SET choice = ?
-        WHERE choice_id = ?`, [new_choice, chosen_choice_id])
-
-    return update_Choices
-}   
+        SET choice = ?, is_correct = ?
+        WHERE choice_id = ? AND question_id = ?`, [new_choice, is_correct, chosen_choice_id, chosen_question_id])
+    const data = {
+        update_Question: update_Question,
+        update_Choices: update_Choices
+        } 
+        return data
+}
 
 export async function deleteQuestion(question_id)
 {
